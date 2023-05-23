@@ -3,25 +3,21 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const { connectionMongoDB} = require("./db")
-const  app =  express()
-const PORT = process.env.PORT || 5000
-
+const envs = require("./envs")
 const userRouter = require("./routes/userRoutes")
 const recipeRouter = require("./routes/recipeRoutes")
 
+const  app =  express()
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors())
 
- connectionMongoDB()
-
+connectionMongoDB()
 
 app.use("/auth" , userRouter)
 app.use("/recipes" , recipeRouter)
 
-app.listen(PORT, ()  =>{
-
-    console.log(`server running on ${PORT} `)
-} )
-
+app.listen(envs.PORT, ()  =>{
+    console.log(`server running on ${envs.PORT} `)
+})

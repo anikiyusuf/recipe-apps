@@ -4,6 +4,7 @@ import { userGetUserId } from "../hook/userGetHook";
 import Pagination from "../Pagination";
 import axios from "axios";
 import "./home.scss"
+import { BASE_API_URL } from "../constants";
 
 let PageSize = 6
  const Home = () => {
@@ -24,7 +25,7 @@ const currentTableData = useMemo(() => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get("https://recipeapp-server.onrender.com/recipes");
+        const response = await axios.get(`${BASE_API_URL}/recipes`);
         setRecipes(response.data);
       } catch (err) {
         console.log(err);
@@ -34,7 +35,7 @@ const currentTableData = useMemo(() => {
     const fetchSavedRecipes = async () => {
       try {
         const response = await axios.get(
-          `https://recipeapp-server.onrender.com/recipes/savedRecipes/ids/${userID}`
+          `${BASE_API_URL}/recipes/savedRecipes/ids/${userID}`
         );
         setSavedRecipes(response.data.savedRecipes);
       } catch (err) {
@@ -48,7 +49,7 @@ const currentTableData = useMemo(() => {
 
   const saveRecipe = async (recipeID) => {
     try {
-      const response = await axios.put("https://recipeapp-server.onrender.com/recipes", {
+      const response = await axios.put(`${BASE_API_URL}/recipes`, {
         recipeID,
         userID,
       });

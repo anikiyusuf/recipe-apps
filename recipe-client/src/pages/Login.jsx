@@ -4,6 +4,7 @@ import { useCookies} from "react-cookie"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom"
 import "./Login.scss"
+import { BASE_API_URL } from "../constants";
 
 export default function Login() {
 
@@ -18,7 +19,7 @@ export default function Login() {
     const handleSubmit = async (event) =>{
         event.preventDefault();
         try{
-         const result = await axios.post("https://recipeapp-server.onrender.com/auth/login" , {
+         const result = await axios.post(`${BASE_API_URL}/auth/login` , {
         username,
         password,
     });

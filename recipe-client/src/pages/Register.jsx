@@ -5,6 +5,7 @@ import { useCookies } from "react-cookie";
 // import { useNavigate } from "react-router-dom";
 import "./Register.scss"
 import { useNavigate} from "react-router-dom"
+import { BASE_API_URL } from "../constants";
 
 
 export default function Register() {
@@ -19,7 +20,7 @@ export default function Register() {
     const handleSubmit = async (event) => {
       event.preventDefault();
       try {
-        await axios.post("https://recipeapp-server.onrender.com/auth/register" , { 
+        await axios.post(`${BASE_API_URL}/auth/register` , { 
          username,
           password,
         });

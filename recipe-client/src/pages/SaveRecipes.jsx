@@ -4,6 +4,7 @@ import {userGetUserId } from "../hook/userGetHook";
 import Pagination from "../Pagination";
 import axios from "axios";
 import "./saveRecipe.scss"
+import { BASE_API_URL } from "../constants";
 
 let PageSize = 6
  const SavedRecipes = () => {
@@ -23,7 +24,7 @@ let PageSize = 6
     const fetchSavedRecipes = async () => {
       try {
         const response = await axios.get(
-          `https://recipeapp-server.onrender.com/recipes/savedRecipes/${userID}`
+          `${BASE_API_URL}/recipes/savedRecipes/${userID}`
         );
         setSavedRecipes(response.data.savedRecipes);
       } catch (err) {

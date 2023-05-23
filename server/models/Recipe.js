@@ -1,8 +1,6 @@
 const mongoose = require("mongoose")
-const Schema = mongoose.Schema
 
-
-const RecipeSchema = new Schema({
+const RecipeSchema = new mongoose.Schema({
     name:{
         type:String,
         require:true
@@ -12,10 +10,10 @@ const RecipeSchema = new Schema({
         type:String , 
         require:true
     },
-instructions: {
-    type: String,
-    required: true,
-  },
+    instructions: {
+        type: String,
+        required: true,
+    },
     imageUrl:{
         type:String,
         require:true
@@ -38,5 +36,7 @@ instructions: {
         default: Date.now()
       }
 })
+
 const RecipeModel = mongoose.model("Recipes" , RecipeSchema)
+
 module.exports = RecipeModel

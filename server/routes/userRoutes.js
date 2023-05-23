@@ -1,11 +1,8 @@
-
-
-
-
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/Users");
+const envs = require("../envs");
 
 const userRouter = express.Router();
 
@@ -31,10 +28,14 @@ userRouter.post("/login", async (req, res) => {
     return res.status(400).json({ message: "Username or password is incorrect" });
   }
 
-  const { _id: id } = user;
-  const secret = process.env.JWT_TOKEN || "fallback-secret-key";
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) {
+    return res.status(400).json({ message: "Username or password is incorrect" });
+  }
 
-  const token = jwt.sign({ id }, secret);
+  const { _id: id } = user;
+
+  const token = jwt.sign({ id }, envs.JWT_SECRET);
 
   res.json({ token, userID: id });
 });

@@ -1,14 +1,8 @@
-require("dotenv").config()
 const mongoose = require("mongoose")
+const envs = require("./envs")
 
-
-const MONGODB = process.env.MONGODB
-
-
-
-
-function connectionMongoDB(){
-   mongoose.connect(MONGODB)
+function connectionMongoDB() {
+   mongoose.connect(envs.MONGO_URI)
 
    mongoose.connection.on('connected', () =>{
     console.log('connection to mongodb successful')
@@ -16,7 +10,7 @@ function connectionMongoDB(){
 
    mongoose.connection.on('err',(err) =>{
     console.log(err)
-   } )
+   })
 }
 
 module.exports = { connectionMongoDB }

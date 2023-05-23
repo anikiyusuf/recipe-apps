@@ -89,19 +89,18 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
 import "./create.scss";
+import { BASE_API_URL } from "../constants";
 
 
 export default function CreateRecipe() {
   const [selectedImage, setSelectedImage] = useState(null);
   const userID = userGetUserId();
-  // eslint-disable-next-line no-unused-vars
-  const [cookies, _] = useCookies(["access_token"]);
+  const cookies = useCookies(["access_token"])[0]
 
   const [recipe, setRecipe] = useState({
     name: "",
     ingredients: "",
     instructions: "",
-    imageUrl: "",
     cookingTime: 0,
     userOwner: userID,
   });
@@ -110,13 +109,15 @@ export default function CreateRecipe() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setRecipe({ ...recipe , [name]:value})
-    // setSelectedImage(event.target.files[0])
-    const img = {
-        preview:URL.createObjectURL(event.target.files[0]),
-      data: event.target.files[0]
+    if (name !== "image") {
+      setRecipe({ ...recipe, [name]: value });
+    } else {
+      const img = {
+          preview:URL.createObjectURL(event.target.files[0]),
+          data: event.target.files[0]
+      }
+      setSelectedImage(img)
     }
-    setSelectedImage(img)
   };
 
   const handleSubmit = async (event) => {
@@ -129,7 +130,7 @@ export default function CreateRecipe() {
     }
 
     try {
-      await axios.post("https://recipeapp-server.onrender.com/recipes", formData, {
+      await axios.post(`${BASE_API_URL}/recipes`, formData, {
         headers: { authorization: cookies.access_token },
       });
       alert("Recipe created!");
@@ -142,7 +143,7 @@ export default function CreateRecipe() {
   return (
     <div className="createRecipe">
       <h2>Create Recipe</h2>
-      <form onSubmit={handleSubmit} className="createForm">
+      <form onSubmit={handleSubmit} className="createForm" encType="multipart/form-data">
         <label htmlFor="name">Name</label>
         <br />
         <input
@@ -172,13 +173,13 @@ export default function CreateRecipe() {
         />
         <br />
 
-        <label htmlFor="imageUrl">Image Upload</label>
+        <label htmlFor="image">Image Upload</label>
         <br />
         <input
           type="file"
-          id="imageUrl"
-          name="imageUrl"
-          value={recipe.imageUrl}
+          id="image"
+          name="image"
+          value={recipe.image}
           onChange={handleChange}
           className="image"
          
