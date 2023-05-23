@@ -6,17 +6,30 @@ const UserModel = require("../models/Users")
 const verifyToken = require("../middleware/userMiddleware")
 
 const storage = multer.diskStorage({
-    destination:function( req, file, cb){
-        console.log('file' , file)
+    destination: function( req, file, cb) {
         cb(null , './uploads/')
     }, 
-    filename: function ( req, file, cb ){
-        const filename = file.filename + '-' +  file.originalname.split('.').pop()
-        cb(null , filename)
+    filename: function ( req, file, cb ) {
+        // resize the image to 200x200 pixels
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        const splits = file.originalname.split('.')
+        const ext = splits[splits.length - 1]
+        const name = splits.slice(0, -1).join('.')
+        req.body.image = name.replace(' ', '-') + '-' + uniqueSuffix + '.' + ext
+        cb(null, req.body.image)
     }
 });
 
-const upload = multer({ dest: './uploads/', storage })
+const upload = multer({
+    storage,
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+            cb(null, true)
+        } else {
+            cb(new Error('Only .jpeg, .jpg and .png format allowed!'))
+        }
+    }
+})
 
 const recipeRouter = express.Router()
 
@@ -30,21 +43,15 @@ recipeRouter.get("/", async(req , res) => {
  })
 
  recipeRouter.post("/", verifyToken, upload.single('image'), async (req,res) => {
-    const file = req.file?.image
-    console.log(file)
-    console.log(req.body.image)
-    const recipe = new RecipeModel({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        image: req.headers.host + '/uploads/' + file,
-        ingredients: req.body.ingredients,
-        instructions: req.body.instructions,
-        cookingTime: req.body.cookingTime,
-        userOwner: req.body.userOwner, 
-    })
+    const host = req.protocol + '://' + req.get('host')
+    try {
+        const recipe = new RecipeModel({
+            ...req.body,
+            image: host + '/uploads/' + req.body.image,
+        })
 
-    try{
         const result = await recipe.save()
+
         res.status(201).json({
             createdRecipe: {
                 name: result.name,
@@ -80,8 +87,6 @@ recipeRouter.put("/" , async (req,res) => {
     }
 })
 
-
-// Get  id of Saved Recipes 
 recipeRouter.get("/savedRecipes/ids/:userId" , async (req,res) => {
     try {
         const user = await   UserModel.findById(req.params.userId)
@@ -99,7 +104,6 @@ recipeRouter.get("/savedRecipes/:userId" , async (req,res) => {
         const savedRecipes = await   RecipeModel.find({
             _id: { $in: user.savedRecipes},
         })
-        console.log(savedRecipes);
         res.status(201).json({ savedRecipes });
     } catch(err) {
         console.log(err);

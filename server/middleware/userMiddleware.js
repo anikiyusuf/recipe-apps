@@ -3,9 +3,10 @@ const envs = require("../envs")
 
 const verifyToken = (req, res ,next) =>{
     const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(" ")[1]
 
-    if(authHeader) {
-        jwt.verify(authHeader , envs.JWT_SECRET, (err) => {
+    if(token) {
+        jwt.verify(token , envs.JWT_SECRET, (err) => {
             if(err) {
                 return res.status(403).json({message: "Token is not valid"})
             }
