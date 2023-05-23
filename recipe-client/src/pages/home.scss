@@ -1,0 +1,45 @@
+.home{
+   text-align: center;
+}
+
+
+.listItem{
+   display:grid;
+   grid-template-columns:repeat(3 , 1fr);
+  
+}
+
+li{
+   list-style:none
+}
+
+.container{
+   background-color:#fff;
+   margin:auto;
+   padding:4rem;
+   margin-bottom:2rem;
+   box-shadow: 6px 4px 57px -30px rgba(21,20,20,0.75);
+    line-height: 2rem;
+}
+
+// .container:hover{
+//    background:pink;
+//    color:white
+// }
+.container h2 {
+   margin-top: -2rem;
+   margin-bottom: 1rem;
+}
+.Pages{
+     margin-left:30rem;
+     margin-top: 1rem;
+     margin-bottom: 2rem;
+}
+
+.saveBtn{
+   background: black;
+   border: none;
+   color: white;
+   padding:1rem;
+
+}

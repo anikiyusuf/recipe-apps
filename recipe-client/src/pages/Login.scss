@@ -1,0 +1,50 @@
+.loginForm{
+ text-align: center;
+}
+
+
+.login{
+  
+   background-color: white;
+    width:20rem;
+    padding: 3rem;
+    box-shadow: 6px 4px 57px -30px rgba(21,20,20,0.75);
+    border-radius: .5rem;
+    margin:auto;
+    margin-top: 1rem;
+   
+}
+
+
+.form-group{
+    margin-top: 1rem;
+   
+}
+input{
+    border-radius: .4rem;
+    padding:.4rem;
+    width:100%;
+    margin-top:.4rem;
+}
+
+.loginBtn{
+    background-color: black;
+    color:white;
+    border-radius: 1rem;
+    cursor: pointer;
+    border:none;
+    margin-top: 1rem;
+    padding:1rem;
+    
+
+}
+
+.addBtn , .createBtn{
+      background: black; 
+      color:white;
+      padding:.7rem;
+      border: none;
+      cursor:point;
+      border-radius: .5rem;
+      margin-top: .5rem;
+}
