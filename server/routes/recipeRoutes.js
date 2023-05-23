@@ -5,23 +5,21 @@ const RecipeModel = require('../models/Recipe')
 const UserModel = require("../models/Users")
 const verifyToken = require("../middleware/userMiddleware")
 
-const storage = multer.diskStorage({
-    destination: function( req, file, cb) {
-        cb(null , './uploads/')
-    }, 
-    filename: function ( req, file, cb ) {
-        // resize the image to 200x200 pixels
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const splits = file.originalname.split('.')
-        const ext = splits[splits.length - 1]
-        const name = splits.slice(0, -1).join('.')
-        req.body.image = name.replace(' ', '-') + '-' + uniqueSuffix + '.' + ext
-        cb(null, req.body.image)
-    }
-});
-
 const upload = multer({
-    storage,
+    storage: multer.diskStorage({
+        destination: function(req, file, cb) {
+            cb(null , './uploads/')
+        }, 
+        filename: function (req, file, cb ) {
+            // resize the image to 200x200 pixels
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            const splits = file.originalname.split('.')
+            const ext = splits[splits.length - 1]
+            const name = splits.slice(0, -1).join('.')
+            req.body.image = name.replace(' ', '-') + '-' + uniqueSuffix + '.' + ext
+            cb(null, req.body.image)
+        }
+    }),
     fileFilter: function (req, file, cb) {
         if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
             cb(null, true)
@@ -96,7 +94,6 @@ recipeRouter.get("/savedRecipes/ids/:userId" , async (req,res) => {
         res.status(500).json(err);
     }
 })
-
 
 recipeRouter.get("/savedRecipes/:userId" , async (req,res) => {
     try {
