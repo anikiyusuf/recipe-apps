@@ -1,25 +1,41 @@
 import  { useEffect, useState , useMemo } from "react";
-import {userGetUserId } from "../hook/userGetHook";
-
+import { userGetUserId } from "../hook/userGetHook";
+import PropTypes from 'prop-types';
 import Pagination from "../Pagination";
 import axios from "axios";
 import "./saveRecipe.scss"
 import { BASE_API_URL } from "../constants";
 
-let PageSize = 6
- const SavedRecipes = () => {
+const SavedRecipe = ({ recipe }) => {
+  const  {
+    name, ingredients, image, cookingTime,
+  } = recipe;
+  return (
+  <div className="containerSave">
+    <li>
+      <div>
+        <h2>{name}</h2>
+      </div>
+      <p>{ingredients}</p>
+      <img src={image} alt={name} />
+      <p>Cooking Time: {cookingTime} minutes</p>
+    </li>
+    </div>
+  )
+}
+
+const SavedRecipes = () => {
   const  [currentPage , setCurrentPage] = useState(1)
   const [savedRecipes, setSavedRecipes] = useState([]);
   const userID = userGetUserId();
 
-
+  const PageSize = 6
   const currentTable = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize
     return savedRecipes.slice(firstPageIndex , lastPageIndex)
   } , [currentPage, savedRecipes])
-  
-  
+
   useEffect(() => {
     const fetchSavedRecipes = async () => {
       try {
@@ -34,32 +50,31 @@ let PageSize = 6
 
     fetchSavedRecipes();
   }, []);
+
   return (
     <div className="saved">
       <h1>Saved Recipes</h1>
       <ul className="savedItem">
-        {currentTable.map((recipe) => (
-          // eslint-disable-next-line react/jsx-key
-          <div className="containerSave">
-          <li key={recipe._id}>
-            <div>
-              <h2>{recipe.name}</h2>
-            </div>
-            <p>{recipe.description}</p>
-            <img src={recipe.imageUrl} alt={recipe.name} />
-            <p>Cooking Time: {recipe.cookingTime} minutes</p>
-          </li>
-          </div>
-        ))}
+        {currentTable.map((recipe, idx) => (<SavedRecipe key={idx} recipe={recipe} />))}
       </ul>
-   <Pagination 
+   <Pagination
       className="Pages"
       currentPage={currentPage}
       totalCount = { savedRecipes.length}
-      pageSize = { PageSize}
+      pageSize = {PageSize}
       onPageChange = {page => setCurrentPage(page)}/>
     </div>
   );
 };
 
+SavedRecipe.propTypes = {
+  recipe: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    ingredients: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    cookingTime: PropTypes.number.isRequired,
+    instructions: PropTypes.string.isRequired,
+  }).isRequired
+};
 export default SavedRecipes

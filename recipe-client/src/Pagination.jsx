@@ -17,8 +17,6 @@ const Pagination = props => {
         pageSize,
         // eslint-disable-next-line react/prop-types
         className
-      
-
     }   = props;
 
     const paginationRange  = usePagination({

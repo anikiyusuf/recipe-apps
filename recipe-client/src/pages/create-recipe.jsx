@@ -21,7 +21,7 @@
 //            instructions:"",
 //            imageUrl:"",
 //            cookingTime:0,
-//            userOwner: userID,
+//            user: userID,
 //     })
 //     const navigate = useNavigate()
 
@@ -93,45 +93,50 @@ import { BASE_API_URL } from "../constants";
 
 
 export default function CreateRecipe() {
-  const [selectedImage, setSelectedImage] = useState(null);
   const userID = userGetUserId();
   const cookies = useCookies(["access_token"])[0]
+  const [image, setImage] = useState(null);
 
   const [recipe, setRecipe] = useState({
     name: "",
     ingredients: "",
     instructions: "",
     cookingTime: 0,
-    userOwner: userID,
+    user: userID,
   });
 
   const navigate = useNavigate();
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    if (name !== "image") {
-      setRecipe({ ...recipe, [name]: value });
+    event.preventDefault();
+    const { name, value, files } = event.target;
+    if (name === 'image') {
+      setImage(files[0]);
     } else {
-      const img = {
-          preview:URL.createObjectURL(event.target.files[0]),
-          data: event.target.files[0]
-      }
-      setSelectedImage(img)
+      setRecipe({ ...recipe, [name]: value });
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!image) {
+      alert("Please upload an image");
+      return;
+    }
+    if (!recipe.name || !recipe.ingredients || !recipe.instructions || !recipe.cookingTime) {
+      alert("Please fill in all fields");
+      return;
+    }
 
     let formData = new FormData();
-    formData.append('image', selectedImage);
+    formData.append("image", image);
     for (const key in recipe) {
       formData.append(key, recipe[key]);
     }
 
     try {
       await axios.post(`${BASE_API_URL}/recipes`, formData, {
-        headers: { authorization: cookies.access_token },
+        headers: { authorization: `Bearer ${cookies.access_token}` },
       });
       alert("Recipe created!");
       navigate("/");

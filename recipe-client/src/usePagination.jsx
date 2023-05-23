@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-    export const usePagination = ({
+export const usePagination = ({
     totalCount,
     pageSize,
     siblingCount = 1,
@@ -46,7 +46,6 @@ import { useMemo } from "react";
 
 const range = ( start , end ) => {
     let length = end - start + 1
-
     return Array.from({ length} , (_ , idx) => idx + start)
 }
 
